@@ -10,7 +10,7 @@ dotenv.config()
 const app = express()
 const server = createServer(app);
 export const io = new Server(server, {
-  cors: { origin: "http://localhost:5173" }, // frontend origin
+  cors: { origin: ["http://localhost:5173","https://smart-event-booking-dm2h4fw7q-gourvishwajeets-projects.vercel.app","https://smart-event-booking-nine.vercel.app/","https://smart-event-booking-git-main-gourvishwajeets-projects.vercel.app/"] }, // frontend origin
 });
 
 app.use(cors({origin:"http://localhost:5173"}))
