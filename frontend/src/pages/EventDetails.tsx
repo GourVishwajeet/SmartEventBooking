@@ -34,7 +34,7 @@ const EventDetails = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/events/${id}`)
+      .get(`${import.meta.env.VITE_API_URL}/api/events/${id}`)
       .then((res) => {
         setEvent({ ...res.data, price: Number(res.data.price) })
         setLoading(false)
@@ -64,7 +64,7 @@ const EventDetails = () => {
       >
         {event.img ? (
           <img
-            src={event.img.startsWith("http") ? event.img : `http://localhost:4000${event.img}`}
+            src={event.img.startsWith("http") ? event.img : `${import.meta.env.VITE_API_URL}${event.img}`}
             alt={event.title}
             className="w-full h-full object-cover"
           />

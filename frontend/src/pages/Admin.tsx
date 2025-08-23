@@ -240,7 +240,7 @@ const saveEdit = async () => {
               {typeof e.img === "string" && e.img ? (
                 <img
                   className="rounded-md max-w-96 max-h-52"
-                  src={`http://localhost:4000${e.img}`}
+                  src={`${import.meta.env.VITE_API_URL}${e.img}`}
                   alt={e.title}
                 />
               ) : (
@@ -326,7 +326,7 @@ const saveEdit = async () => {
               <div>
                 {typeof editingEvent.img === "string" && editingEvent.img ? (
                   <img
-                    src={`http://localhost:4000${editingEvent.img}`}
+                    src={`${import.meta.env.VITE_API_URL}${editingEvent.img}`}
                     alt="Event Preview"
                     className="w-32 h-20 object-cover rounded mb-2"
                   />

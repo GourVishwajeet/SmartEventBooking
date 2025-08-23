@@ -40,7 +40,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
           src={
             event.img.startsWith("http")
               ? event.img
-              : `http://localhost:4000${event.img}`
+              : `${import.meta.env.VITE_API_URL}${event.img}`
           }
           alt={event.title}
         />

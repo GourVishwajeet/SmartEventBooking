@@ -34,7 +34,7 @@ const EventsList: React.FC<EventsListProps> = ({ query }) => {
     ;(async () => {
       try {
         setLoading(true)
-        const res = await axios.get("http://localhost:4000/api/events")
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/events`)
         if (!mounted) return
         const data = (res.data || []).map((e: Event) => ({
           ...e,
