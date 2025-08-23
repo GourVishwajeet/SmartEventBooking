@@ -50,7 +50,7 @@ const formatDateForMySQL = (date: Date) => {
     name,
     email,
     mobile,
-    quantity,
+    quantity:tickets,
     total_amount: totalAmount,
     booking_date: date,
     status: "confirmed",
