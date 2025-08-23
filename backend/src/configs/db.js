@@ -1,19 +1,26 @@
-import mysql from 'mysql2/promise'
+import mysql from "mysql2/promise";
 
-
-export const db = await mysql.createConnection({
- host: process.env.MYSQL_HOST || "b1ddb5cn1gtz62xubfco-mysql.services.clever-cloud.com",
-  user: process.env.MYSQL_USER || "usc5u1rzh9mahziv",
-  password: process.env.MYSQL_PASSWORD || "g4NNs7bXcaHefxoObUxG",
-  database: process.env.MYSQL_DB || "b1ddb5cn1gtz62xubfco",
-  port: process.env.MYSQL_PORT || 3306,
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || "b1ddb5cn1gtz62xubfco-mysql.services.clever-cloud.com",
+  user: process.env.DB_USER || "usc5u1rzh9mahziv",
+  password: process.env.DB_PASSWORD || "g4NNs7bXcaHefxoObUxG",
+  database: process.env.DB_NAME || "b1ddb5cn1gtz62xubfco",
+  port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
-  multipleStatements: true,
+  queueLimit: 0,
+  ssl: { rejectUnauthorized: false }, 
 });
 
-db.connect(err => {
-  if (err) throw err;
-  console.log('Connected to MySQL');
-});
 
+(async () => {
+  try {
+    const conn = await pool.getConnection();
+    console.log("✅ Connected to MySQL Database");
+    conn.release();
+  } catch (err) {
+    console.error("❌ MySQL connection failed:", err.message);
+  }
+})();
+
+export default pool;
