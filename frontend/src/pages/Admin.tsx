@@ -69,10 +69,10 @@ export default function Admin() {
         description: "",
         location: "",
         date: "",
-        total_seats: undefined,
-        available_seats: undefined,
-        price: undefined,
-        img: "" as string,
+        total_seats: 0,
+        available_seats: 0,
+        price: 0,
+        img: "",
       });
 
       load();
