@@ -25,9 +25,9 @@ export default function App(){
           <Route path="/" element={<LandingPage/>}/>
           <Route path="/event_details/:id" element={<EventDetails/>}/>
            <Route path="/booking" element={<BookingFlow />} />
-          <Route path="/login" element={<Login/>}/>
+          {/* <Route path="/login" element={<Login/>}/> */}
           <Route path="/about" element={<About/>}/>
-          <Route path="/register" element={<Register/>}/>
+          {/* <Route path="/register" element={<Register/>}/> */}
           <Route path="/bookings" element={<MyBookings/>}/>
           <Route path="/admin" element={<Admin/>}/>
         </Routes>
