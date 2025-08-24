@@ -10,10 +10,11 @@ const Navbar: React.FC = () => {
         <Link to={"/events"} className="hover:text-gray-300">Events</Link>
         <Link to={"/about"} className="hover:text-gray-300">About</Link>
       </div>
-      {/* <div className="space-x-4">
-        <button className="px-4 py-2 bg-white text-black rounded-xl hover:bg-gray-200">Login</button>
-        <button className="px-4 py-2 bg-indigo-600 rounded-xl hover:bg-indigo-500">Register</button>
-      </div> */}
+      <div className="space-x-4">
+        {/* <button className="px-4 py-2 bg-white text-black rounded-xl hover:bg-gray-200">Login</button> */}
+        {/* <button className="px-4 py-2 bg-indigo-600 rounded-xl hover:bg-indigo-500">Register</button> */}
+        <Link to={'/admin'}  className="px-4 py-2  text-blue-400 rounded-xl hover:text-white">Admin ?</Link>
+      </div>
     </nav>
   );
 };
