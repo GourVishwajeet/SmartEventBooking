@@ -16,7 +16,7 @@ export default function BookingFlow() {
   const [mobile, setMobile] = useState("");
   const [tickets, setTickets] = useState(1);
   const [totalAmount, setTotalAmount] = useState(totalPrice);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (quantity) setTickets(quantity);
@@ -61,7 +61,7 @@ export default function BookingFlow() {
     } catch (error) {
       console.log(error);
       setStep("failure");
-      setError(error.response.data.error)
+      setError(error.response.data.error);
     }
   };
 
@@ -242,9 +242,7 @@ export default function BookingFlow() {
               <h2 className="text-3xl font-bold text-red-600 mb-4">
                 ❌ Booking Failed!
               </h2>
-               <h6 className="text-xl font-bold text-red-600 mb-4">
-                {error}
-              </h6>
+              <h6 className="text-xl font-bold text-red-600 mb-4">{error}</h6>
               <p className="text-gray-600 mb-6">
                 Sorry{" "}
                 <span className="font-semibold text-gray-800">
@@ -257,7 +255,10 @@ export default function BookingFlow() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  setError(null);
+                  setStep("form");
+                }}
                 className="inline-block bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-500 cursor-pointer"
               >
                 Try Again
