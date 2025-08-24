@@ -7,67 +7,63 @@ import { Calendar, MapPin, Ticket, BadgeIndianRupee } from "lucide-react";
 import api from "../api";
 
 export default function BookingFlow() {
-
-  
   const location = useLocation();
   const { quantity, totalPrice, ticketCategory, event } = location.state || {};
 
-  const [step, setStep] = useState<"form" | "success">("form");
+  const [step, setStep] = useState<"form" | "success" | "failure">("form");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [tickets, setTickets] = useState(1);
   const [totalAmount, setTotalAmount] = useState(totalPrice);
-  
-
-
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (quantity) setTickets(quantity);
     if (totalPrice) setTotalAmount(totalPrice);
   }, [quantity]);
-const formatDateForMySQL = (date: Date) => {
-  const pad = (n: number) => (n < 10 ? "0" + n : n);
-  return (
-    date.getFullYear() +
-    "-" +
-    pad(date.getMonth() + 1) +
-    "-" +
-    pad(date.getDate()) +
-    " " +
-    pad(date.getHours()) +
-    ":" +
-    pad(date.getMinutes()) +
-    ":" +
-    pad(date.getSeconds())
-  );
-};
- const handleBooking = async (e: React.FormEvent) => {
-  e.preventDefault();
-   const date = formatDateForMySQL(new Date());
-  const bookingData = {
-    eventId: event.id,
-    name,
-    email,
-    mobile,
-    quantity:tickets,
-    total_amount: totalAmount,
-    booking_date: date,
-    status: "confirmed",
+  const formatDateForMySQL = (date: Date) => {
+    const pad = (n: number) => (n < 10 ? "0" + n : n);
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      " " +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes()) +
+      ":" +
+      pad(date.getSeconds())
+    );
   };
+  const handleBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const date = formatDateForMySQL(new Date());
+    const bookingData = {
+      eventId: event.id,
+      name,
+      email,
+      mobile,
+      quantity: tickets,
+      total_amount: totalAmount,
+      booking_date: date,
+      status: "confirmed",
+    };
 
-  try {
-    await api.post("/bookings/", bookingData, {
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.log(error);
-  }
-
-  setStep("success");
-  confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
-};
-
+    try {
+      await api.post("/bookings/", bookingData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      setStep("success");
+      confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+    } catch (error) {
+      console.log(error);
+      setStep("failure");
+      setError(error.response.data.error)
+    }
+  };
 
   const ticketData = JSON.stringify({
     name,
@@ -82,8 +78,7 @@ const formatDateForMySQL = (date: Date) => {
     <div className="min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-100 p-6">
       <div className="w-full max-w-2xl">
         <AnimatePresence mode="wait">
-          {step === "form" ? (
-           
+          {step === "form" && (
             <motion.form
               key="form"
               onSubmit={handleBooking}
@@ -117,7 +112,7 @@ const formatDateForMySQL = (date: Date) => {
                   </div>
                   <div className="flex items-center text-indigo-600 font-semibold mt-2 text-lg">
                     <BadgeIndianRupee className="h-5 w-5 mr-1" />
-                    {tickets*event.price}
+                    {tickets * event.price}
                   </div>
                 </div>
               )}
@@ -148,7 +143,7 @@ const formatDateForMySQL = (date: Date) => {
                   className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Mobile
@@ -170,7 +165,10 @@ const formatDateForMySQL = (date: Date) => {
                   type="number"
                   min={1}
                   value={tickets}
-                  onChange={(e) => {setTickets(Number(e.target.value));setTotalAmount(Number(e.target.value)*event.price)}}
+                  onChange={(e) => {
+                    setTickets(Number(e.target.value));
+                    setTotalAmount(Number(e.target.value) * event.price);
+                  }}
                   className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
@@ -184,8 +182,9 @@ const formatDateForMySQL = (date: Date) => {
                 Confirm Booking
               </motion.button>
             </motion.form>
-          ) : (
-          //  success screen
+          )}
+          {step === "success" && (
+            //  success screen
             <motion.div
               key="success"
               initial={{ opacity: 0, y: 40 }}
@@ -199,7 +198,7 @@ const formatDateForMySQL = (date: Date) => {
               </h2>
               <p className="text-gray-600 mb-6">
                 Thank you{" "}
-                <span className="font-semibold text-gray-800">{name}</span>!  
+                <span className="font-semibold text-gray-800">{name}</span>!
                 Your <b>{ticketCategory?.type}</b> ticket(s) for{" "}
                 <b>{event?.title}</b> are booked.
               </p>
@@ -226,6 +225,43 @@ const formatDateForMySQL = (date: Date) => {
               >
                 Download Ticket
               </motion.a>
+            </motion.div>
+          )}
+
+          {step === "failure" && (
+            // failure screen
+
+            <motion.div
+              key="failure"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -40 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white rounded-2xl shadow-xl p-8 text-center"
+            >
+              <h2 className="text-3xl font-bold text-red-600 mb-4">
+                ❌ Booking Failed!
+              </h2>
+               <h6 className="text-xl font-bold text-red-600 mb-4">
+                {error}
+              </h6>
+              <p className="text-gray-600 mb-6">
+                Sorry{" "}
+                <span className="font-semibold text-gray-800">
+                  {name || "User"}
+                </span>
+                , we couldn’t complete your booking for <b>{event?.title}</b>.
+                Please try again or contact support.
+              </p>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => window.location.reload()}
+                className="inline-block bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-500 cursor-pointer"
+              >
+                Try Again
+              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
