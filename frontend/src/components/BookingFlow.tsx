@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeCanvas } from "qrcode.react";
 import confetti from "canvas-confetti";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar, MapPin, Ticket, BadgeIndianRupee } from "lucide-react";
 import api from "../api";
 
@@ -17,6 +17,8 @@ export default function BookingFlow() {
   const [tickets, setTickets] = useState(1);
   const [totalAmount, setTotalAmount] = useState(totalPrice);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (quantity) setTickets(quantity);
@@ -242,7 +244,11 @@ export default function BookingFlow() {
               <h2 className="text-3xl font-bold text-red-600 mb-4">
                 ❌ Booking Failed!
               </h2>
-              <h6 className="text-xl font-bold text-red-600 mb-4">{error}</h6>
+              <h6 className="text-xl font-bold text-red-600 mb-4">
+                {error === "Only 0 seats left"
+                  ? "Sorry all seats are Booked"
+                  : error}
+              </h6>
               <p className="text-gray-600 mb-6">
                 Sorry{" "}
                 <span className="font-semibold text-gray-800">
@@ -257,11 +263,17 @@ export default function BookingFlow() {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
                   setError(null);
-                  setStep("form");
+                  if (error === "Only 0 seats left") {
+                    navigate("/events");
+                  } else {
+                    setStep("form");
+                  }
                 }}
                 className="inline-block bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-500 cursor-pointer"
               >
-                Try Again
+                {error === "Only 0 seats left"
+                  ? "Explore More Events"
+                  : "Try Again"}
               </motion.button>
             </motion.div>
           )}
